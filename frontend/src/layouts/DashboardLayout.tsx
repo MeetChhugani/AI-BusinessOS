@@ -28,7 +28,7 @@ export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ child
     { name: 'Finance & Ledger', icon: Landmark, path: '/dashboard/finance', active: true },
     { name: 'Platform Services', icon: Settings, path: '/dashboard/platform', active: true },
     { name: 'BI & Analytics', icon: BarChart3, path: '/dashboard/analytics', active: true },
-    { name: 'AI Features', icon: Bot, path: '/dashboard/ai', active: false },
+    { name: 'AI Features', icon: Bot, path: '/dashboard/ai', active: true },
   ];
 
   return (

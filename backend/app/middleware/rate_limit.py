@@ -1,3 +1,4 @@
+from typing import Any
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from app.exceptions.custom_exceptions import RateLimitException

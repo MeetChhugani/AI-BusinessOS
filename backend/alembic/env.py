@@ -124,6 +124,12 @@ from app.models.analytics.reports import ReportDefinition, ReportExecution, Sche
 from app.models.analytics.alerts import AlertRule, AlertExecution
 from app.models.analytics.exports import DataExport
 from app.models.analytics.kpis import KPIDefinition, KPIValue
+from app.models.ai import (
+    LLMProvider, ModelConfiguration, AISession, AIConversation, AIMessage, AgentDefinition, AgentExecution,
+    PromptTemplate, PromptVersion, KnowledgeDocument, KnowledgeChunk, EmbeddingRecord, VectorIndex,
+    MemoryRecord, BusinessContext, BusinessEntity, BusinessRelationship, ToolDefinition, CopilotPreference,
+    AIFeedback, AIAudit
+)
 
 # This is the Alembic Config object
 config = context.config

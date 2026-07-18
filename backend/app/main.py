@@ -45,6 +45,7 @@ from app.api.v1.events import router as events_router
 from app.api.v1.settings import router as settings_router
 from app.api.v1.features import router as features_router
 from app.api.v1.analytics import router as analytics_router
+from app.api.v1.ai import router as ai_router
 from app.config.settings import settings
 from app.exceptions.handlers import register_exception_handlers
 from app.logging.config import setup_logging
@@ -146,6 +147,7 @@ app.include_router(events_router, prefix=settings.API_V1_STR)
 app.include_router(settings_router, prefix=settings.API_V1_STR)
 app.include_router(features_router, prefix=settings.API_V1_STR)
 app.include_router(analytics_router, prefix=settings.API_V1_STR)
+app.include_router(ai_router, prefix=settings.API_V1_STR)
 
 @app.get("/", tags=["System"])
 def read_root() -> dict:

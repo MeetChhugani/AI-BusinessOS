@@ -7,10 +7,11 @@ from app.auth.dependencies import get_current_user, RoleChecker
 from app.database.session import get_db_session
 from app.exceptions.custom_exceptions import EntityNotFoundException, ValidationException
 from app.logging.config import logger
-from app.models.finance import ExpenseClaim, JournalEntry, JournalEntryLine, LedgerRepository, JournalRepository
+from app.models.finance import ExpenseClaim, JournalEntry, JournalEntryLine
+from app.repositories.finance_repository import LedgerRepository, JournalRepository
 from app.models.hcm import Employee
 from app.schemas.finance import ExpenseClaimCreate, ExpenseClaimResponse
-from app.schemas.crm import ApprovalWorkflowAction
+from app.schemas.inventory import ApprovalWorkflowAction
 
 router = APIRouter(prefix="/expenses", tags=["Expense Claims"])
 

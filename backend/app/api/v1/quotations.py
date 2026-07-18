@@ -8,9 +8,11 @@ from app.auth.dependencies import get_current_user, RoleChecker
 from app.database.session import get_db_session
 from app.exceptions.custom_exceptions import EntityNotFoundException, ValidationException
 from app.logging.config import logger
-from app.models.crm import Customer, Quotation, QuotationItem, ApprovalWorkflow
+from app.models.crm import Customer, Quotation, QuotationItem
+from app.models.inventory import ApprovalWorkflow
 from app.repositories.crm_repository import PricingEngineRepository
-from app.schemas.crm import QuotationCreate, QuotationResponse, ApprovalWorkflowAction
+from app.schemas.crm import QuotationCreate, QuotationResponse
+from app.schemas.inventory import ApprovalWorkflowAction
 
 router = APIRouter(prefix="/quotations", tags=["Quotations"])
 

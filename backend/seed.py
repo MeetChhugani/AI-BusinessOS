@@ -695,6 +695,42 @@ async def seed_database() -> None:
         # 4. Seed Forecast Models
         fc_rev = ForecastModel(name="Baseline Revenue Exponential Fit", metric_code="REVENUE", model_type="LINEAR_REGRESSION", version=1, status="ACTIVE")
         session.add(fc_rev)
+        await session.flush()
+
+        # --- Phase 8: AI SEEDS ---
+        # 1. Seed LLM Providers
+        prov_openai = LLMProvider(name="OpenAI", code="OPENAI", api_endpoint="https://api.openai.com/v1", status="ACTIVE")
+        session.add(prov_openai)
+        await session.flush()
+
+        # 2. Seed Model Configurations
+        mc_gpt4 = ModelConfiguration(provider_id=prov_openai.id, model_name="gpt-4o", temperature=0.7, max_tokens=4096, is_default=True)
+        session.add(mc_gpt4)
+
+        # 3. Seed dynamic tool registries (MCP compatible)
+        tool_query = ToolDefinition(
+            name="run_analytics_query",
+            description="Query dynamic calculated business metrics like revenue and headcount from the Metrics Engine",
+            input_schema={"type": "object", "properties": {"metric_code": {"type": "string"}}},
+            required_permissions="finance.ledger.read",
+            timeout_seconds=30,
+            retry_policy_max=3
+        )
+        tool_search = ToolDefinition(
+            name="search_erp",
+            description="Search dynamic indexed business entity profiles like customers and products using the Search Engine",
+            input_schema={"type": "object", "properties": {"q": {"type": "string"}}},
+            required_permissions="crm.customer.read",
+            timeout_seconds=30,
+            retry_policy_max=3
+        )
+        session.add_all([tool_query, tool_search])
+
+        # 4. Seed dynamic Specialized Agents Registry
+        session.add_all([
+            AgentDefinition(name="Finance Agent", code="FINANCE_AGENT", capabilities="Analyze and query ledger accounts, balance sheets, and revenues", priority=1, version=1),
+            AgentDefinition(name="Inventory Agent", code="INVENTORY_AGENT", capabilities="Track reorder thresholds, safety stock alerts, and warehouse lines", priority=1, version=1)
+        ])
 
         await session.commit()
         logger.info("database_seeding_completed_successfully")

@@ -67,6 +67,12 @@ import { FinanceAnalyticsDashboard } from './pages/analytics/FinanceAnalyticsDas
 import { KPIManager } from './pages/analytics/KPIManager';
 import { ForecastDashboard } from './pages/analytics/ForecastDashboard';
 
+// AI Module pages
+import { BusinessCopilot } from './pages/ai/BusinessCopilot';
+import { AgentCenter } from './pages/ai/AgentCenter';
+import { KnowledgeBase } from './pages/ai/KnowledgeBase';
+import { ModelManager } from './pages/ai/ModelManager';
+
 // Protected Route wrapper component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -604,6 +610,48 @@ export const App: React.FC = () => {
                 <ProtectedRoute>
                   <DashboardLayout>
                     <ForecastDashboard />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* AI Module Routes */}
+            <Route
+              path="/dashboard/ai"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <BusinessCopilot />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/ai/agents"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <AgentCenter />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/ai/knowledge"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <KnowledgeBase />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/ai/models"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <ModelManager />
                   </DashboardLayout>
                 </ProtectedRoute>
               }

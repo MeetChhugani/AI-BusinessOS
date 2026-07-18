@@ -10,7 +10,8 @@ from app.exceptions.custom_exceptions import EntityNotFoundException, Validation
 from app.logging.config import logger
 from app.models.crm import SalesOrder, SalesOrderItem, CustomerActivityLog
 from app.repositories.crm_repository import SalesOrderRepository
-from app.schemas.crm import SalesOrderCreate, SalesOrderResponse, ApprovalWorkflowAction
+from app.schemas.crm import SalesOrderCreate, SalesOrderResponse
+from app.schemas.inventory import ApprovalWorkflowAction
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 

@@ -14,10 +14,10 @@ from app.models.analytics.forecast import ForecastModel, ForecastResult
 from app.models.analytics.reports import ReportDefinition
 
 # Importing Transactional models from other domains to compute metrics dynamically
-from app.models.employee import Employee, Attendance
-from app.models.product import Product, InventoryTransaction
+from app.models.hcm import Employee, Attendance
+from app.models.inventory import Product, InventoryTransaction
 from app.models.crm import Lead, Opportunity
-from app.models.finance import Invoice, VendorBill, GeneralLedgerAccount
+from app.models.finance import CustomerInvoice, VendorBill, GeneralLedgerAccount
 
 class MetricsEngine:
     @staticmethod
@@ -25,13 +25,13 @@ class MetricsEngine:
         # Resolves metrics dynamically without duplicating calculations
         if metric_code == "REVENUE":
             # Sum of all active invoices
-            q = select(func.sum(Invoice.total_amount)).where(Invoice.deleted_at.is_(None))
+            q = select(func.sum(CustomerInvoice.total_amount)).where(CustomerInvoice.deleted_at.is_(None))
             res = await db.execute(q)
             return float(res.scalar() or 0.0)
 
         elif metric_code == "GROSS_PROFIT":
             # Sales Invoices minus COGS (approximated here by VendorBills)
-            rev_q = select(func.sum(Invoice.total_amount)).where(Invoice.deleted_at.is_(None))
+            rev_q = select(func.sum(CustomerInvoice.total_amount)).where(CustomerInvoice.deleted_at.is_(None))
             exp_q = select(func.sum(VendorBill.total_amount)).where(VendorBill.deleted_at.is_(None))
             rev_res = await db.execute(rev_q)
             exp_res = await db.execute(exp_q)
