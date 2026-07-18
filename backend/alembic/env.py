@@ -117,6 +117,13 @@ from app.models.settings import SystemSetting, FeatureFlag
 from app.models.search import SearchIndex
 from app.models.events import SystemEvent
 from app.models.health import HealthMetric
+from app.models.analytics.dashboard import Dashboard, DashboardWidget, SavedDashboard, VisualizationTemplate
+from app.models.analytics.metrics import BusinessMetric, BusinessDimension, MetricDefinition, MetricSnapshot
+from app.models.analytics.forecast import ForecastModel, ForecastResult
+from app.models.analytics.reports import ReportDefinition, ReportExecution, ScheduledReport, DrilldownConfiguration
+from app.models.analytics.alerts import AlertRule, AlertExecution
+from app.models.analytics.exports import DataExport
+from app.models.analytics.kpis import KPIDefinition, KPIValue
 
 # This is the Alembic Config object
 config = context.config

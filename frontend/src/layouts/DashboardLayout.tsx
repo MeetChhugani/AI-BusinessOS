@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { 
-  LayoutDashboard, Users, Package, HeartHandshake, Bot, Landmark, Settings,
+  LayoutDashboard, Users, Package, HeartHandshake, Bot, Landmark, Settings, BarChart3,
   Menu, X, Sun, Moon, LogOut, ChevronDown 
 } from 'lucide-react';
 
@@ -27,6 +27,7 @@ export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ child
     { name: 'CRM & Client Hub', icon: HeartHandshake, path: '/dashboard/crm', active: true },
     { name: 'Finance & Ledger', icon: Landmark, path: '/dashboard/finance', active: true },
     { name: 'Platform Services', icon: Settings, path: '/dashboard/platform', active: true },
+    { name: 'BI & Analytics', icon: BarChart3, path: '/dashboard/analytics', active: true },
     { name: 'AI Features', icon: Bot, path: '/dashboard/ai', active: false },
   ];
 

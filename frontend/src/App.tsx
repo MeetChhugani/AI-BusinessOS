@@ -58,6 +58,15 @@ import { FileManager } from './pages/platform/FileManager';
 import { SystemSettings } from './pages/platform/SystemSettings';
 import { FeatureFlags } from './pages/platform/FeatureFlags';
 
+// Analytics Module pages
+import { ExecutiveDashboard } from './pages/analytics/ExecutiveDashboard';
+import { HRAnalyticsDashboard } from './pages/analytics/HRAnalyticsDashboard';
+import { CRMAnalyticsDashboard } from './pages/analytics/CRMAnalyticsDashboard';
+import { InventoryAnalyticsDashboard } from './pages/analytics/InventoryAnalyticsDashboard';
+import { FinanceAnalyticsDashboard } from './pages/analytics/FinanceAnalyticsDashboard';
+import { KPIManager } from './pages/analytics/KPIManager';
+import { ForecastDashboard } from './pages/analytics/ForecastDashboard';
+
 // Protected Route wrapper component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -523,6 +532,78 @@ export const App: React.FC = () => {
                 <ProtectedRoute>
                   <DashboardLayout>
                     <FeatureFlags />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Analytics Module Routes */}
+            <Route
+              path="/dashboard/analytics"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <ExecutiveDashboard />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/analytics/hr"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <HRAnalyticsDashboard />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/analytics/crm"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <CRMAnalyticsDashboard />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/analytics/inventory"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <InventoryAnalyticsDashboard />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/analytics/finance"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <FinanceAnalyticsDashboard />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/analytics/kpis"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <KPIManager />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/analytics/forecasts"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <ForecastDashboard />
                   </DashboardLayout>
                 </ProtectedRoute>
               }

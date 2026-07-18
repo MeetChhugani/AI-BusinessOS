@@ -671,6 +671,30 @@ async def seed_database() -> None:
             email_queue_depth=0,
             workflow_queue_depth=0
         ))
+        await session.flush()
+
+        # --- Phase 7: ANALYTICS SEEDS ---
+        # 1. Seed Business Metrics (Semantic definitions)
+        bm_rev = BusinessMetric(name="Total Revenue", code="REVENUE", formula="SUM(invoices.total_amount)", dependencies_json={"tables": ["invoices"]}, cache_refresh_rate="HOURLY", description="Total revenue generated from active invoices")
+        bm_gp = BusinessMetric(name="Gross Profit", code="GROSS_PROFIT", formula="REVENUE - expenses", dependencies_json={"tables": ["invoices", "vendor_bills"]}, cache_refresh_rate="DAILY", description="Net revenue margin minus vendor bill expenditures")
+        bm_conv = BusinessMetric(name="Lead Conversion Rate", code="LEAD_CONVERSION_RATE", formula="COUNT(converted_leads) / COUNT(leads)", dependencies_json={"tables": ["leads"]}, cache_refresh_rate="REALTIME", description="Conversion rate of leads into opportunities")
+        bm_hc = BusinessMetric(name="Employee Headcount", code="EMPLOYEE_HEADCOUNT", formula="COUNT(employees)", dependencies_json={"tables": ["employees"]}, cache_refresh_rate="DAILY", description="Active employee headcount count")
+        session.add_all([bm_rev, bm_gp, bm_conv, bm_hc])
+        await session.flush()
+
+        # 2. Seed Dashboard layouts
+        db_ceo = Dashboard(name="CEO Executive Dashboard", code="CEO_DASHBOARD", allowed_roles="SUPER_ADMIN,ADMIN,CEO", description="Corporate summarization for C-Suite reviews")
+        session.add(db_ceo)
+        await session.flush()
+
+        # 3. Seed KPI Targets
+        kpi_rev = KPIDefinition(name="Monthly Target Revenue", metric_code="REVENUE", target_value=500000.0, threshold_yellow=400000.0, threshold_red=250000.0, status="ACTIVE")
+        kpi_conv = KPIDefinition(name="Target Conversion Rate", metric_code="LEAD_CONVERSION_RATE", target_value=30.0, threshold_yellow=25.0, threshold_red=15.0, status="ACTIVE")
+        session.add_all([kpi_rev, kpi_conv])
+
+        # 4. Seed Forecast Models
+        fc_rev = ForecastModel(name="Baseline Revenue Exponential Fit", metric_code="REVENUE", model_type="LINEAR_REGRESSION", version=1, status="ACTIVE")
+        session.add(fc_rev)
 
         await session.commit()
         logger.info("database_seeding_completed_successfully")
