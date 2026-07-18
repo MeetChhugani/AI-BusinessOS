@@ -108,6 +108,15 @@ from app.models.finance import (
     Reconciliation,
     FinancialActivityLog,
 )
+from app.models.notifications import NotificationTemplate, NotificationPreference, NotificationLog
+from app.models.workflow import WorkflowDefinition, WorkflowTrigger, WorkflowCondition, WorkflowAction, WorkflowExecution
+from app.models.audit import AuditEvent, AuditChange
+from app.models.storage import FileFolder, FileMetadata
+from app.models.scheduler import ScheduledJob, JobExecution
+from app.models.settings import SystemSetting, FeatureFlag
+from app.models.search import SearchIndex
+from app.models.events import SystemEvent
+from app.models.health import HealthMetric
 
 # This is the Alembic Config object
 config = context.config

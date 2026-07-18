@@ -627,6 +627,50 @@ async def seed_database() -> None:
         cat_travel = ExpenseCategory(name="Travel & Transport", code="TRAVEL", default_account_id=acc_rent.id)
         cat_meals = ExpenseCategory(name="Meals & Business Entertainment", code="MEALS", default_account_id=acc_rent.id)
         session.add_all([cat_travel, cat_meals])
+        await session.flush()
+
+        # --- Phase 6: PLATFORM SEEDS ---
+        # 1. Seed Notification templates
+        session.add_all([
+            NotificationTemplate(name="Low Stock Alert", code="LOW_STOCK_ALERT", subject_template="Inventory Warning: Low stock on {{item_name}}", body_template="Warehouse stock alert. The item {{item_name}} quantity has dropped to {{current_quantity}}.", channels="IN_APP,EMAIL"),
+            NotificationTemplate(name="Invoice Approval Required", code="INVOICE_APPROVAL", subject_template="Finance: Invoice Approval Required for {{invoice_num}}", body_template="Invoice {{invoice_num}} total of {{total}} requires approval reviews.", channels="IN_APP,EMAIL")
+        ])
+
+        # 2. Seed System Settings
+        session.add_all([
+            SystemSetting(key="email.smtp_host", value="smtp.businessos.com", category="EMAIL", description="Corporate SMTP Server Address"),
+            SystemSetting(key="storage.local_path", value="C:/Users/meetc/Desktop/AI BusinessOS/storage/", category="STORAGE", description="File attachments system path"),
+            SystemSetting(key="general.company_name", value="AI BusinessOS Enterprise Ltd", category="GENERAL", description="Company legal registration name")
+        ])
+
+        # 3. Seed Feature Flags
+        session.add_all([
+            FeatureFlag(name="experimental.ai_forecasting", enabled=False, description="Beta AI analytical forecasts visualizer"),
+            FeatureFlag(name="ui.next_dashboard", enabled=True, description="Modern UI Dashboard workspace")
+        ])
+
+        # 4. Seed Scheduled Jobs
+        session.add(ScheduledJob(
+            name="Monthly straight-line depreciation run",
+            code="DEPRECIATION_RUN",
+            cron_expression="0 0 1 * *",
+            status="ACTIVE",
+            max_retries=3,
+            backoff_seconds=60,
+            dlq_flag=False
+        ))
+
+        # 5. Seed Telemetry Health metric
+        session.add(HealthMetric(
+            api_latency_ms=18.4,
+            db_latency_ms=4.2,
+            redis_connected=True,
+            disk_usage_percent=42.5,
+            memory_usage_percent=61.8,
+            scheduler_queue_depth=0,
+            email_queue_depth=0,
+            workflow_queue_depth=0
+        ))
 
         await session.commit()
         logger.info("database_seeding_completed_successfully")

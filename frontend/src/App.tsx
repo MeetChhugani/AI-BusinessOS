@@ -48,6 +48,16 @@ import { FixedAssetsPage } from './pages/finance/FixedAssetsPage';
 import { BudgetsPage } from './pages/finance/BudgetsPage';
 import { FinancialReportsPage } from './pages/finance/FinancialReportsPage';
 
+// Platform Module pages
+import { PlatformDashboard } from './pages/platform/PlatformDashboard';
+import { NotificationCenter } from './pages/platform/NotificationCenter';
+import { WorkflowBuilder } from './pages/platform/WorkflowBuilder';
+import { AuditCenter } from './pages/platform/AuditCenter';
+import { SearchCenter } from './pages/platform/SearchCenter';
+import { FileManager } from './pages/platform/FileManager';
+import { SystemSettings } from './pages/platform/SystemSettings';
+import { FeatureFlags } from './pages/platform/FeatureFlags';
+
 // Protected Route wrapper component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -431,6 +441,88 @@ export const App: React.FC = () => {
                 <ProtectedRoute>
                   <DashboardLayout>
                     <FinancialReportsPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Platform Module Routes */}
+            <Route
+              path="/dashboard/platform"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <PlatformDashboard />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/platform/notifications"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <NotificationCenter />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/platform/workflows"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <WorkflowBuilder />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/platform/audit"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <AuditCenter />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/platform/search"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <SearchCenter />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/platform/files"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <FileManager />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/platform/settings"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <SystemSettings />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/platform/features"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <FeatureFlags />
                   </DashboardLayout>
                 </ProtectedRoute>
               }
