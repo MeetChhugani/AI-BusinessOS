@@ -569,9 +569,9 @@ async def seed_database() -> None:
 
         # Generate months for fiscal periods
         for m in range(1, 13):
-            # Calendar year shifts
+            # Calendar year shifts: April (1) -> Dec (9) in 2026, Jan (10) -> Mar (12) in 2027
             c_year = 2026 if m <= 9 else 2027
-            c_month = (m + 2) if m <= 9 else (m - 10)
+            c_month = (m + 3) if m <= 9 else (m - 9)
             p_start = date(c_year, c_month, 1)
             p_end = date(c_year, c_month, 28) # simpler approximation
             fp = FiscalPeriod(
