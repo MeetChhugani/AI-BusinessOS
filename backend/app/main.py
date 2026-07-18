@@ -18,6 +18,12 @@ from app.api.v1.inventory import router as inventory_router
 from app.api.v1.purchase_orders import router as purchase_orders_router
 from app.api.v1.transfers import router as transfers_router
 from app.api.v1.audits import router as audits_router
+from app.api.v1.customers import router as customers_router
+from app.api.v1.leads import router as leads_router
+from app.api.v1.opportunities import router as opportunities_router
+from app.api.v1.quotations import router as quotations_router
+from app.api.v1.orders import router as orders_router
+from app.api.v1.tasks import router as tasks_router
 from app.config.settings import settings
 from app.exceptions.handlers import register_exception_handlers
 from app.logging.config import setup_logging
@@ -92,6 +98,12 @@ app.include_router(inventory_router, prefix=settings.API_V1_STR)
 app.include_router(purchase_orders_router, prefix=settings.API_V1_STR)
 app.include_router(transfers_router, prefix=settings.API_V1_STR)
 app.include_router(audits_router, prefix=settings.API_V1_STR)
+app.include_router(customers_router, prefix=settings.API_V1_STR)
+app.include_router(leads_router, prefix=settings.API_V1_STR)
+app.include_router(opportunities_router, prefix=settings.API_V1_STR)
+app.include_router(quotations_router, prefix=settings.API_V1_STR)
+app.include_router(orders_router, prefix=settings.API_V1_STR)
+app.include_router(tasks_router, prefix=settings.API_V1_STR)
 
 @app.get("/", tags=["System"])
 def read_root() -> dict:

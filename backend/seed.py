@@ -1,5 +1,5 @@
 import asyncio
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timezone, timedelta
 from app.auth.security import hash_password
 from app.database.session import async_session_maker
 from app.logging.config import logger
@@ -27,6 +27,27 @@ from app.models.inventory import (
     InventoryTransaction,
     ReorderRule,
     ProductTimeline,
+)
+from app.models.crm import (
+    SalesTerritory,
+    Customer,
+    CustomerContact,
+    CustomerAddress,
+    CustomerNote,
+    CustomerActivityLog,
+    Lead,
+    LeadActivity,
+    Opportunity,
+    OpportunityProduct,
+    PricingRule,
+    Quotation,
+    QuotationItem,
+    SalesOrder,
+    SalesOrderItem,
+    CommunicationTemplate,
+    CRMTask,
+    CRMMeeting,
+    CRMCommunication,
 )
 from sqlalchemy import select
 
@@ -409,6 +430,119 @@ async def seed_database() -> None:
             reorder_quantity=50.0
         )
         session.add(rule_laptop)
+
+        # --- Phase 4: CRM SEEDS ---
+        # 1. Seed Sales Territories
+        st_north = SalesTerritory(name="North America Division", region="North", assigned_salesperson_id=created_users["SALES"].id)
+        st_west = SalesTerritory(name="West Coast Hub", region="West", assigned_salesperson_id=created_users["SALES"].id)
+        session.add_all([st_north, st_west])
+        await session.flush()
+
+        # 2. Seed Pricing Rules (Pricing Engine rules)
+        rule_vip_elec = PricingRule(
+            name="VIP Electronics Discount",
+            customer_segment="VIP",
+            product_id=prod_laptop.id,
+            discount_percentage=15.0, # 15% discount
+            start_date=date.today() - timedelta(days=10),
+            end_date=date.today() + timedelta(days=90),
+            priority=10
+        )
+        session.add(rule_vip_elec)
+
+        # 3. Seed Customers
+        cust_acme = Customer(
+            name="Acme Corporation",
+            customer_type="COMPANY",
+            gst_number="27ACMEE1111A1Z1",
+            industry="Manufacturing",
+            segment="VIP",
+            credit_limit=500000.00,
+            payment_terms="NET30",
+            territory_id=st_north.id,
+            status="ACTIVE"
+        )
+        cust_globex = Customer(
+            name="Globex Corp Ltd",
+            customer_type="COMPANY",
+            gst_number="27GLOBX2222B2Z2",
+            industry="Technology",
+            segment="ENTERPRISE",
+            credit_limit=1000000.00,
+            payment_terms="NET45",
+            territory_id=st_west.id,
+            status="ACTIVE"
+        )
+        session.add_all([cust_acme, cust_globex])
+        await session.flush()
+
+        # Seed Customer Contacts
+        contact_acme = CustomerContact(customer_id=cust_acme.id, first_name="Wile", last_name="Coyote", email="wcoyote@acme.com", phone="+1555900100", job_title="Procurement Director", is_primary=True)
+        contact_globex = CustomerContact(customer_id=cust_globex.id, first_name="Hank", last_name="Scorpio", email="hscorpio@globex.com", phone="+1555900200", job_title="CEO", is_primary=True)
+        session.add_all([contact_acme, contact_globex])
+
+        # Seed Customer Addresses
+        addr_acme = CustomerAddress(customer_id=cust_acme.id, address_type="BILLING", address_line1="123 Desert Road", city="Phoenix", state="AZ", country="US", zip_code="85001")
+        addr_globex = CustomerAddress(customer_id=cust_globex.id, address_type="BILLING", address_line1="456 Cypress Way", city="Cypress Creek", state="OR", country="US", zip_code="97401")
+        session.add_all([addr_acme, addr_globex])
+
+        # Seed Activity Logs
+        session.add_all([
+            CustomerActivityLog(customer_id=cust_acme.id, activity_type="CALL", description="Called Wile to confirm laptop specs requirements", created_by_id=created_users["SALES"].id),
+            CustomerActivityLog(customer_id=cust_globex.id, activity_type="MEETING", description="Initial discovery meeting with Hank Scorpio", created_by_id=created_users["SALES"].id),
+        ])
+
+        # 4. Seed Leads
+        lead_wayne = Lead(
+            first_name="Bruce",
+            last_name="Wayne",
+            company_name="Wayne Enterprises",
+            email="bruce@waynecorp.com",
+            phone="+1555800900",
+            source="REFERRAL",
+            status="NEW",
+            score=0.0,
+            assigned_to_id=created_users["SALES"].id
+        )
+        session.add(lead_wayne)
+        await session.flush()
+
+        # Seed Lead Activities
+        session.add(LeadActivity(lead_id=lead_wayne.id, activity_type="NOTE", details="Met Bruce at charity gala. Expressed interest in bulk hardware upgrades.", created_by_id=created_users["SALES"].id))
+
+        # 5. Seed Opportunities
+        opp_acme = Opportunity(
+            name="Acme Laptop Fleet Upgrade",
+            customer_id=cust_acme.id,
+            stage="QUALIFICATION",
+            probability=20.0,
+            expected_revenue=90000.00,
+            close_date=date.today() + timedelta(days=30),
+            risk_level="MEDIUM",
+            assigned_to_id=created_users["SALES"].id
+        )
+        session.add(opp_acme)
+        await session.flush()
+
+        # Seed Opportunity products
+        opp_prod = OpportunityProduct(
+            opportunity_id=opp_acme.id,
+            product_id=prod_laptop.id,
+            quantity=50.0,
+            unit_price=1800.00
+        )
+        session.add(opp_prod)
+
+        # 6. Seed Tasks
+        session.add(CRMTask(
+            title="Follow up with Bruce Wayne",
+            description="Send company catalog specs sheet",
+            due_date=datetime.now(timezone.utc) + timedelta(days=2),
+            priority="HIGH",
+            status="PENDING",
+            assigned_to_id=created_users["SALES"].id,
+            lead_id=lead_wayne.id
+        ))
 
         await session.commit()
         logger.info("database_seeding_completed_successfully")

@@ -24,7 +24,7 @@ export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ child
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard', active: true },
     { name: 'Employee Management', icon: Users, path: '/dashboard/hcm', active: true },
     { name: 'Inventory & Stock', icon: Package, path: '/dashboard/inventory', active: true },
-    { name: 'CRM & Client Hub', icon: HeartHandshake, path: '/dashboard/crm', active: false },
+    { name: 'CRM & Client Hub', icon: HeartHandshake, path: '/dashboard/crm', active: true },
     { name: 'AI Features', icon: Bot, path: '/dashboard/ai', active: false },
   ];
 

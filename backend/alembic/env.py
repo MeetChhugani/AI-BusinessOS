@@ -55,6 +55,28 @@ from app.models.inventory import (
     InventoryAuditItem,
     InventoryActivityLog,
 )
+from app.models.crm import (
+    SalesTerritory,
+    Customer,
+    CustomerContact,
+    CustomerAddress,
+    CustomerNote,
+    CustomerActivityLog,
+    Lead,
+    LeadActivity,
+    Opportunity,
+    OpportunityProduct,
+    PricingRule,
+    Quotation,
+    QuotationItem,
+    SalesOrder,
+    SalesOrderItem,
+    CustomerDocument,
+    CommunicationTemplate,
+    CRMTask,
+    CRMMeeting,
+    CRMCommunication,
+)
 
 # This is the Alembic Config object
 config = context.config

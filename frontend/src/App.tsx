@@ -29,6 +29,14 @@ import { PurchaseOrdersPage } from './pages/inventory/PurchaseOrdersPage';
 import { StockTransfersPage } from './pages/inventory/StockTransfersPage';
 import { AuditsPage } from './pages/inventory/AuditsPage';
 
+// CRM Module pages
+import { CRMDashboard } from './pages/crm/CRMDashboard';
+import { CustomerDirectory } from './pages/crm/CustomerDirectory';
+import { LeadsPipeline } from './pages/crm/LeadsPipeline';
+import { OpportunitiesKanban } from './pages/crm/OpportunitiesKanban';
+import { QuotationsOrdersPage } from './pages/crm/QuotationsOrdersPage';
+import { TasksCalendarPage } from './pages/crm/TasksCalendarPage';
+
 // Protected Route wrapper component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -258,6 +266,68 @@ export const App: React.FC = () => {
                 <ProtectedRoute>
                   <DashboardLayout>
                     <AuditsPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* CRM Module Routes */}
+            <Route
+              path="/dashboard/crm"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <CRMDashboard />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/crm/directory"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <CustomerDirectory />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/crm/leads"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <LeadsPipeline />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/crm/opportunities"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <OpportunitiesKanban />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/crm/quotations"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <QuotationsOrdersPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/crm/tasks"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <TasksCalendarPage />
                   </DashboardLayout>
                 </ProtectedRoute>
               }
