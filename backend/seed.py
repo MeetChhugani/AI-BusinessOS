@@ -14,6 +14,20 @@ from app.models.hcm import (
     LeaveBalance,
     EmployeeTimeline,
 )
+from app.models.inventory import (
+    Warehouse,
+    WarehouseLocation,
+    Supplier,
+    ProductCategory,
+    Unit,
+    Product,
+    ProductImage,
+    ProductVariant,
+    Inventory,
+    InventoryTransaction,
+    ReorderRule,
+    ProductTimeline,
+)
 from sqlalchemy import select
 
 async def seed_database() -> None:
@@ -62,6 +76,7 @@ async def seed_database() -> None:
 
         await session.flush()  # Generate User IDs without committing yet
 
+        # --- Phase 2: HCM SEEDS ---
         # 1. Seed Departments
         dept_engineering = Department(name="Engineering", description="Software and infrastructure systems", budget=1000000.0)
         dept_hr = Department(name="Human Resources", description="Talent management and acquisition", budget=200000.0)
@@ -85,7 +100,6 @@ async def seed_database() -> None:
         await session.flush()
 
         # 4. Seed Employee profiles
-        # Seed Manager Employee Profile
         emp_manager = Employee(
             user_id=created_users["MANAGER"].id,
             employee_id="EMP-0001",
@@ -148,7 +162,7 @@ async def seed_database() -> None:
         session.add(emp_hr)
         dept_hr.head_id = emp_hr.id
 
-        # Seed onboarding status candidates (drafts, offer sent)
+        # Seed onboarding status candidates
         emp_onboard1 = Employee(
             first_name="Alice",
             last_name="Wonderland",
@@ -176,13 +190,13 @@ async def seed_database() -> None:
         session.add_all([emp_onboard1, emp_onboard2])
         await session.flush()
 
-        # 5. Seed Skills
+        # Seed Skills
         skill_python = EmployeeSkill(employee_id=emp_dev.id, skill_name="Python", proficiency="EXPERT")
         skill_react = EmployeeSkill(employee_id=emp_dev.id, skill_name="React", proficiency="INTERMEDIATE")
         skill_docker = EmployeeSkill(employee_id=emp_dev.id, skill_name="Docker", proficiency="BEGINNER")
         session.add_all([skill_python, skill_react, skill_docker])
 
-        # 6. Seed Salary History records
+        # Seed Salary History records
         salary_mgr = SalaryHistory(
             employee_id=emp_manager.id,
             effective_date=date(2025, 1, 1),
@@ -202,7 +216,7 @@ async def seed_database() -> None:
         )
         session.add_all([salary_mgr, salary_dev])
 
-        # 7. Seed Leave Balances
+        # Seed Leave Balances
         for emp in (emp_manager, emp_dev, emp_hr):
             session.add_all([
                 LeaveBalance(employee_id=emp.id, leave_type_id=lt_annual.id, entitled=20.0, year=2026),
@@ -210,7 +224,7 @@ async def seed_database() -> None:
                 LeaveBalance(employee_id=emp.id, leave_type_id=lt_casual.id, entitled=7.0, year=2026),
             ])
 
-        # 8. Seed Timelines
+        # Seed Timelines
         timeline_mgr = EmployeeTimeline(
             employee_id=emp_manager.id,
             event_type="JOINED",
@@ -226,6 +240,175 @@ async def seed_database() -> None:
             description="Dev Developer hired as Senior Software Engineer",
         )
         session.add_all([timeline_mgr, timeline_dev])
+
+        # --- Phase 3: INVENTORY SEEDS ---
+        # 1. Seed Warehouses
+        wh_central = Warehouse(name="Central Warehouse", code="WH-CENTRAL", address="100 Logistics Blvd, NY", capacity=5000.0, status="ACTIVE", manager_id=emp_manager.id)
+        wh_retail = Warehouse(name="NY Retail Hub", code="WH-NYRETAIL", address="50 Broadway, NY", capacity=1000.0, status="ACTIVE")
+        session.add_all([wh_central, wh_retail])
+        await session.flush()
+
+        # 2. Seed Locations (Zone/Rack/Shelf/Bin)
+        loc_a = WarehouseLocation(warehouse_id=wh_central.id, zone="A", rack="03", shelf="B", bin="12", code="WH1-ZA-R03-SB-B12")
+        loc_b = WarehouseLocation(warehouse_id=wh_central.id, zone="B", rack="01", shelf="A", bin="01", code="WH1-ZB-R01-SA-B01")
+        session.add_all([loc_a, loc_b])
+        await session.flush()
+
+        # 3. Seed Suppliers
+        supplier_tech = Supplier(
+            name="TechCorp Solutions",
+            code="SUP-TECH",
+            contact_name="Sarah Connor",
+            email="sales@techcorp.com",
+            phone="+1555100200",
+            gst_number="27AAAAA1111A1Z1",
+            address="Silicone Valley, CA",
+            payment_terms="NET30",
+            rating=4.8
+        )
+        supplier_office = Supplier(
+            name="Globex Logistics",
+            code="SUP-GLOBEX",
+            contact_name="Homer Simpson",
+            email="shipments@globex.com",
+            phone="+1555200300",
+            gst_number="27BBBBB2222B2Z2",
+            address="Springfield, OR",
+            payment_terms="NET60",
+            rating=3.9,
+            late_delivery_count=3,
+            defect_rate=2.5,
+            cancellation_rate=1.0
+        )
+        session.add_all([supplier_tech, supplier_office])
+        await session.flush()
+
+        # 4. Seed Product Categories
+        cat_elec = ProductCategory(name="Electronics", code="CAT-ELEC", description="Smartphones, laptops, and components", status="ACTIVE")
+        cat_office = ProductCategory(name="Office Supplies", code="CAT-OFFICE", description="Desks, stationary, and materials", status="ACTIVE")
+        session.add_all([cat_elec, cat_office])
+        await session.flush()
+
+        # 5. Seed Units of Measurement
+        unit_pcs = Unit(name="Piece", code="PCS")
+        unit_box = Unit(name="Box", code="BOX")
+        session.add_all([unit_pcs, unit_box])
+        await session.flush()
+
+        # 6. Seed Products
+        prod_laptop = Product(
+            sku="PROD-LAP-15",
+            barcode="880949123456",
+            qr_code="QR-LAP-15",
+            name="Laptop Pro 15",
+            description="High performance 15 inch engineering workstation",
+            category_id=cat_elec.id,
+            brand="Intellect",
+            cost_price=1200.00,
+            selling_price=1800.00,
+            tax_rate=18.0,
+            weight=2.1,
+            dimensions="35x24x2 cm",
+            unit_id=unit_pcs.id,
+            status="ACTIVE"
+        )
+        prod_mouse = Product(
+            sku="PROD-MSE-01",
+            barcode="880949123457",
+            qr_code="QR-MSE-01",
+            name="Wireless Mouse Premium",
+            description="Ergonomic Bluetooth office mouse",
+            category_id=cat_elec.id,
+            brand="Intellect",
+            cost_price=35.00,
+            selling_price=65.00,
+            tax_rate=18.0,
+            weight=0.15,
+            dimensions="12x7x4 cm",
+            unit_id=unit_pcs.id,
+            status="ACTIVE"
+        )
+        session.add_all([prod_laptop, prod_mouse])
+        await session.flush()
+
+        # Seed Product Timelines
+        session.add_all([
+            ProductTimeline(product_id=prod_laptop.id, event_type="CREATED", description="Laptop Pro 15 product initialized"),
+            ProductTimeline(product_id=prod_mouse.id, event_type="CREATED", description="Wireless Mouse Premium product initialized"),
+        ])
+
+        # 7. Seed Product Images
+        img_laptop = ProductImage(product_id=prod_laptop.id, image_url="https://images.unsplash.com/photo-1496181130204-7552cc1524e2?w=500", is_primary=True)
+        img_mouse = ProductImage(product_id=prod_mouse.id, image_url="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500", is_primary=True)
+        session.add_all([img_laptop, img_mouse])
+        await session.flush()
+
+        # 8. Seed Product Variants
+        var_laptop_red = ProductVariant(
+            product_id=prod_laptop.id,
+            sku="PROD-LAP-15-RED",
+            barcode="880949123458",
+            name="Laptop Pro 15 - Red Edition",
+            cost_price=1250.00,
+            selling_price=1850.00,
+            attribute_values={"color": "Red"}
+        )
+        session.add(var_laptop_red)
+        await session.flush()
+
+        # 9. Seed Inventory levels
+        inv_laptop = Inventory(
+            warehouse_id=wh_central.id,
+            location_id=loc_a.id,
+            product_id=prod_laptop.id,
+            quantity_on_hand=50.0,
+            quantity_reserved=5.0,
+            quantity_available=45.0,
+            quantity_incoming=0.0
+        )
+        inv_mouse = Inventory(
+            warehouse_id=wh_central.id,
+            location_id=loc_b.id,
+            product_id=prod_mouse.id,
+            quantity_on_hand=200.0,
+            quantity_reserved=20.0,
+            quantity_available=180.0,
+            quantity_incoming=50.0
+        )
+        session.add_all([inv_laptop, inv_mouse])
+        await session.flush()
+
+        # 10. Seed Inventory Transactions
+        txn_laptop = InventoryTransaction(
+            inventory_id=inv_laptop.id,
+            transaction_type="INBOUND",
+            quantity=50.0,
+            reference_document="GRN-0001",
+            cost_price=1200.00,
+            user_id=created_users["SUPER_ADMIN"].id,
+            notes="Initial seed stock load"
+        )
+        txn_mouse = InventoryTransaction(
+            inventory_id=inv_mouse.id,
+            transaction_type="INBOUND",
+            quantity=200.0,
+            reference_document="GRN-0002",
+            cost_price=35.00,
+            user_id=created_users["SUPER_ADMIN"].id,
+            notes="Initial seed stock load"
+        )
+        session.add_all([txn_laptop, txn_mouse])
+
+        # 11. Seed Reorder rules
+        rule_laptop = ReorderRule(
+            warehouse_id=wh_central.id,
+            product_id=prod_laptop.id,
+            min_stock=10.0,
+            max_stock=100.0,
+            safety_stock=5.0,
+            reorder_quantity=50.0
+        )
+        session.add(rule_laptop)
 
         await session.commit()
         logger.info("database_seeding_completed_successfully")

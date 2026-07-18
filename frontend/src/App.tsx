@@ -21,6 +21,14 @@ import { OnboardingPipeline } from './pages/hcm/OnboardingPipeline';
 import { CSVImportPage } from './pages/hcm/CSVImportPage';
 import { LeavesPage } from './pages/hcm/LeavesPage';
 
+// Inventory Module pages
+import { WarehouseDashboard } from './pages/inventory/WarehouseDashboard';
+import { InventoryDirectory } from './pages/inventory/InventoryDirectory';
+import { ProductCatalog } from './pages/inventory/ProductCatalog';
+import { PurchaseOrdersPage } from './pages/inventory/PurchaseOrdersPage';
+import { StockTransfersPage } from './pages/inventory/StockTransfersPage';
+import { AuditsPage } from './pages/inventory/AuditsPage';
+
 // Protected Route wrapper component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -188,6 +196,68 @@ export const App: React.FC = () => {
                 <ProtectedRoute>
                   <DashboardLayout>
                     <LeavesPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Inventory Module Routes */}
+            <Route
+              path="/dashboard/inventory"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <WarehouseDashboard />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/inventory/directory"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <InventoryDirectory />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/inventory/catalog"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <ProductCatalog />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/inventory/po"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <PurchaseOrdersPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/inventory/transfers"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <StockTransfersPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/inventory/audits"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <AuditsPage />
                   </DashboardLayout>
                 </ProtectedRoute>
               }

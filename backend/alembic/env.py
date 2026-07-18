@@ -28,6 +28,33 @@ from app.models.hcm import (
     EmployeeNote,
     EmployeeTimeline,
 )
+from app.models.inventory import (
+    Warehouse,
+    WarehouseLocation,
+    Supplier,
+    ProductCategory,
+    Unit,
+    Product,
+    ProductImage,
+    ProductVariant,
+    ProductSerial,
+    ProductBatch,
+    Inventory,
+    InventoryTransaction,
+    StockReservation,
+    ReorderRule,
+    PurchaseOrder,
+    PurchaseOrderItem,
+    GoodsReceipt,
+    StockTransfer,
+    StockTransferItem,
+    StockAdjustment,
+    ApprovalWorkflow,
+    ProductTimeline,
+    InventoryAudit,
+    InventoryAuditItem,
+    InventoryActivityLog,
+)
 
 # This is the Alembic Config object
 config = context.config

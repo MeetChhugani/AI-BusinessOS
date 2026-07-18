@@ -11,6 +11,13 @@ from app.api.v1.leaves import router as leaves_router
 from app.api.v1.performance import router as performance_router
 from app.api.v1.documents import router as documents_router
 from app.api.v1.organization import router as organization_router
+from app.api.v1.warehouses import router as warehouses_router
+from app.api.v1.products import router as products_router
+from app.api.v1.suppliers import router as suppliers_router
+from app.api.v1.inventory import router as inventory_router
+from app.api.v1.purchase_orders import router as purchase_orders_router
+from app.api.v1.transfers import router as transfers_router
+from app.api.v1.audits import router as audits_router
 from app.config.settings import settings
 from app.exceptions.handlers import register_exception_handlers
 from app.logging.config import setup_logging
@@ -78,6 +85,13 @@ app.include_router(leaves_router, prefix=settings.API_V1_STR)
 app.include_router(performance_router, prefix=settings.API_V1_STR)
 app.include_router(documents_router, prefix=settings.API_V1_STR)
 app.include_router(organization_router, prefix=settings.API_V1_STR)
+app.include_router(warehouses_router, prefix=settings.API_V1_STR)
+app.include_router(products_router, prefix=settings.API_V1_STR)
+app.include_router(suppliers_router, prefix=settings.API_V1_STR)
+app.include_router(inventory_router, prefix=settings.API_V1_STR)
+app.include_router(purchase_orders_router, prefix=settings.API_V1_STR)
+app.include_router(transfers_router, prefix=settings.API_V1_STR)
+app.include_router(audits_router, prefix=settings.API_V1_STR)
 
 @app.get("/", tags=["System"])
 def read_root() -> dict:
