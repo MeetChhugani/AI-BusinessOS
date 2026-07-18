@@ -1,6 +1,8 @@
 import uuid
 import time
+import httpx
 from typing import List, Dict, Any, Optional
+from app.config.settings import settings
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.exceptions.custom_exceptions import ValidationException, EntityNotFoundException
@@ -23,6 +25,37 @@ class ProviderService:
         model_name: str = "gpt-4o"
     ) -> str:
         logger.info("llm_completion_requested", provider=provider, model=model_name)
+        
+        # If GROQ_API_KEY is present, attempt live Groq completion
+        if settings.GROQ_API_KEY:
+            try:
+                async with httpx.AsyncClient() as client:
+                    headers = {
+                        "Authorization": f"Bearer {settings.GROQ_API_KEY}",
+                        "Content-Type": "application/json"
+                    }
+                    payload = {
+                        "model": "mixtral-8x7b-32768",
+                        "messages": [
+                            {"role": "system", "content": "You are a helpful business analytics executive summary coordinator copilot for the AI BusinessOS ERP system."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        "temperature": 0.3,
+                        "max_tokens": 1024
+                    }
+                    res = await client.post(
+                        "https://api.groq.com/openai/v1/chat/completions",
+                        json=payload,
+                        headers=headers,
+                        timeout=30.0
+                    )
+                    if res.status_code == 200:
+                        return res.json()["choices"][0]["message"]["content"]
+                    else:
+                        logger.error("groq_api_error", status=res.status_code, body=res.text)
+            except Exception as e:
+                logger.error("groq_connection_failed", err=str(e))
+
         # Mock completions to allow complete offline unit testing
         if "revenue" in prompt.lower():
             return "Based on ERP Finance Analytics, total revenue for the current period stands at ₹500,000. This is matching target limits."

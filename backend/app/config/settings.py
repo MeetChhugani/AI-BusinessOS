@@ -1,7 +1,7 @@
 import json
 import os
 from pathlib import Path
-from typing import List, Union
+from typing import List, Union, Optional
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -53,6 +53,9 @@ class Settings(BaseSettings):
     # Initial Seeds
     FIRST_SUPER_ADMIN_EMAIL: str = "superadmin@businessos.com"
     FIRST_SUPER_ADMIN_PASSWORD: str = "SuperSecurePassword123!"
+
+    # AI Config
+    GROQ_API_KEY: Optional[str] = None
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
