@@ -37,6 +37,17 @@ import { OpportunitiesKanban } from './pages/crm/OpportunitiesKanban';
 import { QuotationsOrdersPage } from './pages/crm/QuotationsOrdersPage';
 import { TasksCalendarPage } from './pages/crm/TasksCalendarPage';
 
+// Finance Module pages
+import { FinanceDashboard } from './pages/finance/FinanceDashboard';
+import { ChartOfAccounts } from './pages/finance/ChartOfAccounts';
+import { JournalEntries } from './pages/finance/JournalEntries';
+import { InvoicesBillsPage } from './pages/finance/InvoicesBillsPage';
+import { BankReconciliation } from './pages/finance/BankReconciliation';
+import { ExpenseClaimsPage } from './pages/finance/ExpenseClaimsPage';
+import { FixedAssetsPage } from './pages/finance/FixedAssetsPage';
+import { BudgetsPage } from './pages/finance/BudgetsPage';
+import { FinancialReportsPage } from './pages/finance/FinancialReportsPage';
+
 // Protected Route wrapper component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -328,6 +339,98 @@ export const App: React.FC = () => {
                 <ProtectedRoute>
                   <DashboardLayout>
                     <TasksCalendarPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Finance Module Routes */}
+            <Route
+              path="/dashboard/finance"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <FinanceDashboard />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/finance/accounts"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <ChartOfAccounts />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/finance/journal"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <JournalEntries />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/finance/invoices"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <InvoicesBillsPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/finance/reconciliation"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <BankReconciliation />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/finance/expenses"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <ExpenseClaimsPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/finance/assets"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <FixedAssetsPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/finance/budgets"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <BudgetsPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/finance/reports"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <FinancialReportsPage />
                   </DashboardLayout>
                 </ProtectedRoute>
               }

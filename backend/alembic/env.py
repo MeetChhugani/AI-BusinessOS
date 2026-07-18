@@ -77,6 +77,37 @@ from app.models.crm import (
     CRMMeeting,
     CRMCommunication,
 )
+from app.models.finance import (
+    Currency,
+    ExchangeRate,
+    FiscalYear,
+    FiscalPeriod,
+    CostCenter,
+    GeneralLedgerAccount,
+    ChartOfAccounts,
+    JournalEntry,
+    JournalEntryLine,
+    RecurringJournalTemplate,
+    TaxConfiguration,
+    TaxRate,
+    CustomerInvoice,
+    InvoiceItem,
+    VendorBill,
+    VendorBillItem,
+    Payment,
+    PaymentAllocation,
+    Receipt,
+    ExpenseCategory,
+    ExpenseClaim,
+    Asset,
+    AssetDepreciation,
+    Budget,
+    BudgetLine,
+    BankAccount,
+    BankTransaction,
+    Reconciliation,
+    FinancialActivityLog,
+)
 
 # This is the Alembic Config object
 config = context.config

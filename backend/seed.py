@@ -49,6 +49,16 @@ from app.models.crm import (
     CRMMeeting,
     CRMCommunication,
 )
+from app.models.finance import (
+    Currency,
+    FiscalYear,
+    FiscalPeriod,
+    CostCenter,
+    GeneralLedgerAccount,
+    TaxConfiguration,
+    TaxRate,
+    ExpenseCategory,
+)
 from sqlalchemy import select
 
 async def seed_database() -> None:
@@ -59,7 +69,7 @@ async def seed_database() -> None:
         result = await session.execute(query)
         first_user = result.scalars().first()
         
-        # We will delete and re-seed or skip if already seeded
+        # We will skip if already seeded
         if first_user is not None:
             logger.info("database_already_seeded_skipping")
             return
@@ -543,6 +553,80 @@ async def seed_database() -> None:
             assigned_to_id=created_users["SALES"].id,
             lead_id=lead_wayne.id
         ))
+        await session.flush()
+
+        # --- Phase 5: FINANCE SEEDS ---
+        # 1. Seed Currencies
+        cur_usd = Currency(code="USD", name="US Dollar", symbol="$", is_base=True)
+        cur_inr = Currency(code="INR", name="Indian Rupee", symbol="₹", is_base=False)
+        session.add_all([cur_usd, cur_inr])
+        await session.flush()
+
+        # 2. Seed Fiscal Year and custom open periods (April to March)
+        fy_2026 = FiscalYear(name="FY-2026", start_date=date(2026, 4, 1), end_date=date(2027, 3, 31), status="OPEN")
+        session.add(fy_2026)
+        await session.flush()
+
+        # Generate months for fiscal periods
+        for m in range(1, 13):
+            # Calendar year shifts
+            c_year = 2026 if m <= 9 else 2027
+            c_month = (m + 2) if m <= 9 else (m - 10)
+            p_start = date(c_year, c_month, 1)
+            p_end = date(c_year, c_month, 28) # simpler approximation
+            fp = FiscalPeriod(
+                fiscal_year_id=fy_2026.id,
+                name=f"Period-{m:02d}",
+                start_date=p_start,
+                end_date=p_end,
+                status="OPEN"
+            )
+            session.add(fp)
+
+        # 3. Seed Cost Centers
+        cc_eng = CostCenter(code="CC-ENG", name="Engineering", description="R&D cost center", manager_id=created_users["MANAGER"].id)
+        cc_sales = CostCenter(code="CC-SALES", name="Sales & Marketing", description="Customer acquisition expenses", manager_id=created_users["SALES"].id)
+        session.add_all([cc_eng, cc_sales])
+        await session.flush()
+
+        # 4. Seed General Ledger Chart of Accounts
+        # Root Assets Accounts (1000 - 1999)
+        acc_cash = GeneralLedgerAccount(code="1000", name="Cash & Cash Equivalents", account_type="ASSET", opening_balance=500000.00, current_balance=500000.00)
+        acc_ar = GeneralLedgerAccount(code="1200", name="Accounts Receivable", account_type="ASSET", opening_balance=0.00, current_balance=0.00)
+        acc_inv = GeneralLedgerAccount(code="1400", name="Inventory Asset", account_type="ASSET", opening_balance=240000.00, current_balance=240000.00)
+        acc_equip = GeneralLedgerAccount(code="1600", name="Fixed Asset Equipment", account_type="ASSET", opening_balance=10000.00, current_balance=10000.00)
+        acc_accum_dep = GeneralLedgerAccount(code="1800", name="Accumulated Depreciation", account_type="ASSET", opening_balance=0.00, current_balance=0.00)
+        
+        # Liabilities Accounts (2000 - 2999)
+        acc_ap = GeneralLedgerAccount(code="2000", name="Accounts Payable", account_type="LIABILITY", opening_balance=0.00, current_balance=0.00)
+        acc_tax = GeneralLedgerAccount(code="2200", name="Tax Payable", account_type="LIABILITY", opening_balance=0.00, current_balance=0.00)
+        
+        # Equity Accounts (3000 - 3999)
+        acc_equity = GeneralLedgerAccount(code="3000", name="Retained Earnings", account_type="EQUITY", opening_balance=750000.00, current_balance=750000.00)
+        
+        # Revenue Accounts (4000 - 4999)
+        acc_revenue = GeneralLedgerAccount(code="4000", name="Sales Revenue", account_type="REVENUE", opening_balance=0.00, current_balance=0.00)
+        
+        # Expenses Accounts (5000 - 5999)
+        acc_cogs = GeneralLedgerAccount(code="5000", name="Cost of Goods Sold", account_type="EXPENSE", opening_balance=0.00, current_balance=0.00)
+        acc_rent = GeneralLedgerAccount(code="5100", name="Rent Expense", account_type="EXPENSE", opening_balance=0.00, current_balance=0.00)
+        acc_dep_exp = GeneralLedgerAccount(code="5500", name="Depreciation Expense", account_type="EXPENSE", opening_balance=0.00, current_balance=0.00)
+
+        session.add_all([acc_cash, acc_ar, acc_inv, acc_equip, acc_accum_dep, acc_ap, acc_tax, acc_equity, acc_revenue, acc_cogs, acc_rent, acc_dep_exp])
+        await session.flush()
+
+        # 5. Seed Tax Rules
+        tax_config = TaxConfiguration(name="Default GST Configuration", code="GST", status="ACTIVE")
+        session.add(tax_config)
+        await session.flush()
+
+        tax_rate = TaxRate(tax_configuration_id=tax_config.id, name="GST 18%", rate=18.0)
+        session.add(tax_rate)
+
+        # 6. Seed Expense Categories
+        cat_travel = ExpenseCategory(name="Travel & Transport", code="TRAVEL", default_account_id=acc_rent.id)
+        cat_meals = ExpenseCategory(name="Meals & Business Entertainment", code="MEALS", default_account_id=acc_rent.id)
+        session.add_all([cat_travel, cat_meals])
 
         await session.commit()
         logger.info("database_seeding_completed_successfully")

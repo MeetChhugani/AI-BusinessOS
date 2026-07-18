@@ -24,6 +24,16 @@ from app.api.v1.opportunities import router as opportunities_router
 from app.api.v1.quotations import router as quotations_router
 from app.api.v1.orders import router as orders_router
 from app.api.v1.tasks import router as tasks_router
+from app.api.v1.accounts import router as accounts_router
+from app.api.v1.journal import router as journal_router
+from app.api.v1.invoices import router as invoices_router
+from app.api.v1.vendor_bills import router as vendor_bills_router
+from app.api.v1.payments import router as payments_router
+from app.api.v1.bank import router as bank_router
+from app.api.v1.assets import router as assets_router
+from app.api.v1.budgets import router as budgets_router
+from app.api.v1.expenses import router as expenses_router
+from app.api.v1.reports import router as reports_router
 from app.config.settings import settings
 from app.exceptions.handlers import register_exception_handlers
 from app.logging.config import setup_logging
@@ -104,6 +114,16 @@ app.include_router(opportunities_router, prefix=settings.API_V1_STR)
 app.include_router(quotations_router, prefix=settings.API_V1_STR)
 app.include_router(orders_router, prefix=settings.API_V1_STR)
 app.include_router(tasks_router, prefix=settings.API_V1_STR)
+app.include_router(accounts_router, prefix=settings.API_V1_STR)
+app.include_router(journal_router, prefix=settings.API_V1_STR)
+app.include_router(invoices_router, prefix=settings.API_V1_STR)
+app.include_router(vendor_bills_router, prefix=settings.API_V1_STR)
+app.include_router(payments_router, prefix=settings.API_V1_STR)
+app.include_router(bank_router, prefix=settings.API_V1_STR)
+app.include_router(assets_router, prefix=settings.API_V1_STR)
+app.include_router(budgets_router, prefix=settings.API_V1_STR)
+app.include_router(expenses_router, prefix=settings.API_V1_STR)
+app.include_router(reports_router, prefix=settings.API_V1_STR)
 
 @app.get("/", tags=["System"])
 def read_root() -> dict:
