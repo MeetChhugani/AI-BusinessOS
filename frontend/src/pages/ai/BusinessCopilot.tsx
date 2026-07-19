@@ -24,10 +24,10 @@ export const BusinessCopilot: React.FC = () => {
 
   const renderFormattedContent = (content: string) => {
     let structuredText = content;
-    // Replace " - **" with "\n- **" to put lists on separate lines
-    structuredText = structuredText.replace(/ \- \*\*/g, '\n- **');
-    // Replace " **Section" with double newline to enforce proper spacing
-    structuredText = structuredText.replace(/ \*\*(Financial|Operational|Customer|Human|Supply|Key|Recommendations|Next)/g, '\n\n**$1');
+    // Replace list indicators with dynamic spacing, supporting any space padding around hyphens
+    structuredText = structuredText.replace(/\s*-\s*\*\*/g, '\n- **');
+    // Replace section headers with double newlines, supporting optional space padding
+    structuredText = structuredText.replace(/\s*\*\*(Financial|Operational|Customer|Human|Supply|Key|Recommendations|Next)/g, '\n\n**$1');
 
     const lines = structuredText.split('\n');
     return lines.map((line, lineIdx) => {
