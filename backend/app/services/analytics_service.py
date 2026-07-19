@@ -1,5 +1,4 @@
 import uuid
-import numpy as np
 from datetime import datetime, timedelta
 from typing import List, Optional, Dict, Any
 from sqlalchemy import select, func, and_, or_
@@ -97,9 +96,16 @@ class ForecastEngine:
         # Statistical projection using linear regression baseline
         # In mock databases, we simulate statistical datasets points
         historical_values = [120000.0, 145000.0, 160000.0, 185000.0, 210000.0]
-        x = np.arange(len(historical_values))
-        y = np.array(historical_values)
-        slope, intercept = np.polyfit(x, y, 1)
+        # Pure python least-squares linear fit
+        n = len(historical_values)
+        x_list = list(range(n))
+        y_list = historical_values
+        mean_x = sum(x_list) / n
+        mean_y = sum(y_list) / n
+        num = sum((x_list[i] - mean_x) * (y_list[i] - mean_y) for i in range(n))
+        den = sum((x_list[i] - mean_x) ** 2 for i in range(n))
+        slope = num / den if den != 0 else 0.0
+        intercept = mean_y - slope * mean_x
 
         results = []
         start_date = datetime.utcnow()
