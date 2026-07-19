@@ -59,6 +59,15 @@ from app.models.finance import (
     TaxRate,
     ExpenseCategory,
 )
+from app.models.notifications import NotificationTemplate
+from app.models.settings import SystemSetting, FeatureFlag
+from app.models.scheduler import ScheduledJob
+from app.models.health import HealthMetric
+from app.models.analytics.metrics import BusinessMetric
+from app.models.analytics.dashboard import Dashboard
+from app.models.analytics.kpis import KPIDefinition
+from app.models.analytics.forecast import ForecastModel
+from app.models.ai import LLMProvider, ModelConfiguration, ToolDefinition, AgentDefinition
 from sqlalchemy import select
 
 async def seed_database() -> None:
