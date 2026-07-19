@@ -35,7 +35,7 @@ class ProviderService:
                         "Content-Type": "application/json"
                     }
                     payload = {
-                        "model": "mixtral-8x7b-32768",
+                        "model": "llama3-8b-8192",
                         "messages": [
                             {"role": "system", "content": "You are a helpful business analytics executive summary coordinator copilot for the AI BusinessOS ERP system."},
                             {"role": "user", "content": prompt}
