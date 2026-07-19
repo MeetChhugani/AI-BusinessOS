@@ -22,6 +22,29 @@ export const BusinessCopilot: React.FC = () => {
     "Simulate safety stock reorder thresholds"
   ];
 
+  const renderFormattedContent = (content: string) => {
+    const lines = content.split('\n');
+    return lines.map((line, lineIdx) => {
+      const parts = line.split(/(\*\*[^*]+\*\*)/g);
+      const elements = parts.map((part, partIdx) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return <strong key={partIdx} className="font-bold text-white">{part.slice(2, -2)}</strong>;
+        }
+        return part;
+      });
+      
+      if (line.trim() === '') {
+        return <div key={lineIdx} className="h-2" />;
+      }
+
+      return (
+        <p key={lineIdx} className="text-neutral-300 leading-relaxed font-medium mt-1">
+          {elements}
+        </p>
+      );
+    });
+  };
+
   const handleSend = async (text: string) => {
     if (!text.trim() || isSending) return;
     setErrorMessage('');
@@ -146,7 +169,7 @@ export const BusinessCopilot: React.FC = () => {
                       </span>
                     )}
                   </div>
-                  <p className="text-neutral-300 leading-relaxed font-medium">{m.content}</p>
+                  <div className="space-y-1">{renderFormattedContent(m.content)}</div>
                 </div>
                 {m.role === 'user' && (
                   <div className="w-8 h-8 rounded-lg bg-neutral-800 flex items-center justify-center border border-neutral-700 text-neutral-300 shrink-0">
