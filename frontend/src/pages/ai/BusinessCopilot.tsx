@@ -23,7 +23,13 @@ export const BusinessCopilot: React.FC = () => {
   ];
 
   const renderFormattedContent = (content: string) => {
-    const lines = content.split('\n');
+    let structuredText = content;
+    // Replace " - **" with "\n- **" to put lists on separate lines
+    structuredText = structuredText.replace(/ \- \*\*/g, '\n- **');
+    // Replace " **Section" with double newline to enforce proper spacing
+    structuredText = structuredText.replace(/ \*\*(Financial|Operational|Customer|Human|Supply|Key|Recommendations|Next)/g, '\n\n**$1');
+
+    const lines = structuredText.split('\n');
     return lines.map((line, lineIdx) => {
       const parts = line.split(/(\*\*[^*]+\*\*)/g);
       const elements = parts.map((part, partIdx) => {
@@ -34,12 +40,20 @@ export const BusinessCopilot: React.FC = () => {
       });
       
       if (line.trim() === '') {
-        return <div key={lineIdx} className="h-2" />;
+        return <div key={lineIdx} className="h-3" />;
       }
 
+      const isListItem = line.trim().startsWith('-') || line.trim().startsWith('*');
+
       return (
-        <p key={lineIdx} className="text-neutral-300 leading-relaxed font-medium mt-1">
-          {elements}
+        <p key={lineIdx} className={`text-neutral-300 leading-relaxed font-medium mt-1.5 ${isListItem ? 'pl-4 list-item list-disc ml-4' : ''}`}>
+          {isListItem ? elements.map((el) => {
+            // Remove the leading dash character if it was a list item element
+            if (typeof el === 'string' && el.trim().startsWith('-')) {
+              return el.replace(/^\s*\-\s*/, '');
+            }
+            return el;
+          }) : elements}
         </p>
       );
     });
