@@ -279,23 +279,26 @@ export const DashboardPage: React.FC = () => {
               </div>
             ) : (
               <div className="space-y-4 overflow-y-auto max-h-[260px] pr-1">
-                {insights.map((ins, idx) => (
-                  <div key={idx} className="flex items-center justify-between py-2.5 border-b border-neutral-800/40 last:border-0">
-                    <div className="flex items-center space-x-3 w-full">
-                      <div className={`w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-[10px] font-black ${
-                        ins.type === 'ERROR' || ins.type === 'WARNING' 
-                          ? 'bg-rose-500/10 border border-rose-500/20 text-rose-400' 
-                          : 'bg-indigo-500/10 border border-indigo-500/20 text-indigo-400'
-                      }`}>
-                        {ins.type[0]}
-                      </div>
-                      <div className="space-y-0.5 w-full">
-                        <p className="text-[11px] font-semibold text-neutral-200 line-clamp-2">{ins.message}</p>
-                        <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider">{ins.type} Alert</p>
+                {insights.map((ins, idx) => {
+                  const severity = ins.severity || 'INFO';
+                  return (
+                    <div key={idx} className="flex items-center justify-between py-2.5 border-b border-neutral-800/40 last:border-0">
+                      <div className="flex items-center space-x-3 w-full">
+                        <div className={`w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-[10px] font-black ${
+                          severity === 'ERROR' || severity === 'WARNING' 
+                            ? 'bg-rose-500/10 border border-rose-500/20 text-rose-400' 
+                            : 'bg-indigo-500/10 border border-indigo-500/20 text-indigo-400'
+                        }`}>
+                          {severity[0]}
+                        </div>
+                        <div className="space-y-0.5 w-full">
+                          <p className="text-[11px] font-semibold text-neutral-200 line-clamp-2">{ins.message}</p>
+                          <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider">{severity} Alert</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
